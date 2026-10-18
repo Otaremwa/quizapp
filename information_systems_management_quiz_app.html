@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>MIS 7203 - Information Systems Management Quiz</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Google Fonts: Inter -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .gradient-bg {
+      background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #311042 100%);
+    }
+    .card-glass {
+      background: rgba(255, 255, 255, 0.96);
+      backdrop-filter: blur(12px);
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 5px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: #f1f5f9;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body class="bg-slate-900 text-slate-800 min-h-screen flex flex-col justify-between selection:bg-purple-500 selection:text-white">
+
+  <!-- TOP BRANDING HEADER -->
+  <header class="w-full gradient-bg px-4 py-3 border-b border-slate-800/80 sticky top-0 z-30 shadow-lg">
+    <div class="max-w-md mx-auto flex items-center justify-between gap-3">
+      <div class="flex items-center gap-3">
+        <!-- Logo container with white background as requested -->
+        <div class="w-11 h-11 rounded-full bg-white p-1 flex items-center justify-center shadow-md shrink-0 border-2 border-purple-400">
+          <img src="OTTECHIES (1).jpg" alt="OTTECHIES Logo" class="w-full h-full object-contain rounded-full" onerror="this.onerror=null; this.src='https://placehold.co/100x100/ffffff/9333ea?text=OT';">
+        </div>
+        <div>
+          <h1 class="text-white font-bold text-base leading-tight tracking-wide">MIS 7203 Quiz</h1>
+          <p class="text-purple-300 text-xs font-medium">Info Systems Management</p>
+        </div>
+      </div>
+      
+      <!-- Deployment Guide Toggle Button -->
+      <button onclick="toggleGithubModal()" class="text-xs bg-purple-900/60 hover:bg-purple-800 text-purple-200 border border-purple-500/40 px-2.5 py-1.5 rounded-lg flex items-center gap-1.5 transition active:scale-95">
+        <i class="fa-brands fa-github text-sm">font</i>
+        <span class="hidden sm:inline">Host on</span> GitHub
+      </button>
+    </div>
+  </header>
+
+  <!-- MAIN CONTAINER (Mobile Centered) -->
+  <main class="w-full max-w-md mx-auto px-3 py-4 flex-1 flex flex-col justify-center">
+
+    <!-- 1. START SCREEN -->
+    <div id="start-screen" class="card-glass rounded-2xl p-5 shadow-2xl border border-slate-200/50 space-y-5 animate-fade-in">
+      <div class="text-center space-y-2">
+        <div class="inline-flex items-center justify-center w-12 h-12 bg-purple-100 text-purple-700 rounded-full mb-1">
+          <i class="fa-solid fa-graduation-cap text-xl"></i>
+        </div>
+        <h2 class="text-xl font-extrabold text-slate-900">Module Knowledge Check</h2>
+        <p class="text-xs text-slate-600 leading-relaxed px-2">
+          Test your mastery of core Information Systems Management concepts, data-to-decision workflows, Porter's forces, and IS challenges.
+        </p>
+      </div>
+
+      <!-- Mode Selector -->
+      <div class="bg-slate-100 p-1.5 rounded-xl flex text-xs font-semibold gap-1">
+        <button id="mode-all-btn" onclick="setQuizMode('all')" class="flex-1 py-2 rounded-lg bg-white text-purple-900 shadow-sm transition-all text-center">
+          Full Quiz (15 Qs)
+        </button>
+        <button id="mode-quick-btn" onclick="setQuizMode('quick')" class="flex-1 py-2 rounded-lg text-slate-600 hover:text-slate-900 transition-all text-center">
+          Quick (5 Qs)
+        </button>
+      </div>
+
+      <!-- Instructions Box -->
+      <div class="bg-purple-50/70 rounded-xl p-3.5 border border-purple-100 text-xs space-y-2">
+        <div class="font-bold text-purple-900 flex items-center gap-1.5">
+          <i class="fa-solid fa-circle-info text-purple-600"></i> How it works:
+        </div>
+        <ul class="text-slate-600 space-y-1 list-disc list-inside">
+          <li>Select the single best answer for each question.</li>
+          <li>Instant feedback & explanations for failed items at the end.</li>
+          <li>Option to re-test only missed questions.</li>
+        </ul>
+      </div>
+
+      <button onclick="startQuiz()" class="w-full py-3.5 gradient-bg hover:opacity-95 text-white font-bold rounded-xl shadow-lg text-sm tracking-wide flex items-center justify-center gap-2 active:scale-98 transition">
+        <span>Start Practice Quiz</span>
+        <i class="fa-solid fa-arrow-right text-xs"></i>
+      </button>
+    </div>
+
+    <!-- 2. QUIZ SCREEN -->
+    <div id="quiz-screen" class="hidden card-glass rounded-2xl p-4 sm:p-5 shadow-2xl border border-slate-200/50 space-y-4">
+      <!-- Progress Bar & Indicator -->
+      <div class="space-y-1.5">
+        <div class="flex justify-between items-center text-xs font-semibold text-slate-500">
+          <span id="question-progress-label">Question 1 of 15</span>
+          <span id="question-percent" class="text-purple-700 font-bold">7%</span>
+        </div>
+        <div class="w-full bg-slate-200 h-2 rounded-full overflow-hidden">
+          <div id="progress-bar-fill" class="h-full bg-gradient-to-r from-purple-600 to-indigo-600 transition-all duration-300" style="width: 7%"></div>
+        </div>
+      </div>
+
+      <!-- Question Box -->
+      <div class="pt-1">
+        <span id="topic-badge" class="inline-block px-2.5 py-0.5 rounded-md bg-purple-100 text-purple-800 font-bold text-[10px] tracking-wider uppercase mb-2">
+          Core Concept
+        </span>
+        <h3 id="question-text" class="text-sm sm:text-base font-bold text-slate-900 leading-snug">
+          Question text loading...
+        </h3>
+      </div>
+
+      <!-- Multiple Choice Options -->
+      <div id="options-container" class="space-y-2.5 pt-1">
+        <!-- JS inserts options here -->
+      </div>
+
+      <!-- Bottom Navigation Buttons -->
+      <div class="flex items-center justify-between gap-3 pt-3 border-t border-slate-200/80">
+        <button id="prev-btn" onclick="prevQuestion()" class="px-3.5 py-2 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-700 font-semibold text-xs transition disabled:opacity-40 disabled:cursor-not-allowed">
+          <i class="fa-solid fa-chevron-left mr-1"></i> Prev
+        </button>
+
+        <button id="next-btn" onclick="nextQuestion()" class="flex-1 py-2.5 gradient-bg text-white font-semibold text-xs rounded-xl shadow-md transition flex items-center justify-center gap-1 active:scale-98">
+          <span id="next-btn-text">Next</span>
+          <i id="next-btn-icon" class="fa-solid fa-chevron-right text-[10px]"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- 3. RESULTS & REVIEW SCREEN -->
+    <div id="results-screen" class="hidden space-y-4">
+      
+      <!-- Summary Score Card -->
+      <div class="card-glass rounded-2xl p-5 shadow-xl border border-slate-200/50 text-center space-y-3">
+        <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-purple-100 text-purple-700 text-2xl font-black mb-1 ring-4 ring-purple-50">
+          <span id="score-percentage">0%</span>
+        </div>
+        
+        <div>
+          <h2 id="score-headline" class="text-lg font-bold text-slate-900">Quiz Completed!</h2>
+          <p id="score-subtext" class="text-xs text-slate-600 mt-0.5">
+            You answered <span id="score-fraction" class="font-bold text-purple-800">0/15</span> questions correctly.
+          </p>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="grid grid-cols-2 gap-2 pt-2">
+          <button id="retake-failed-btn" onclick="retryFailedQuestions()" class="w-full py-2.5 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl text-xs shadow transition active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed">
+            <i class="fa-solid fa-rotate-left mr-1"></i> Retry Failed
+          </button>
+          <button onclick="restartFullQuiz()" class="w-full py-2.5 gradient-bg hover:opacity-90 text-white font-bold rounded-xl text-xs shadow transition active:scale-95">
+            <i class="fa-solid fa-arrows-rotate mr-1"></i> Start Over
+          </button>
+        </div>
+      </div>
+
+      <!-- Failed Questions Breakdown Header -->
+      <div class="flex items-center justify-between px-1">
+        <h3 class="text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
+          <i class="fa-solid fa-file-circle-xmark text-pink-400"></i> Review & Explanations
+        </h3>
+        <span id="failed-count-badge" class="text-[11px] font-bold bg-pink-950/80 text-pink-300 px-2 py-0.5 rounded-full border border-pink-800/50">
+          0 Failed
+        </span>
+      </div>
+
+      <!-- Scrollable Review List -->
+      <div id="review-list" class="space-y-3 max-h-[55vh] overflow-y-auto pr-1 custom-scrollbar">
+        <!-- JS injects failed or review question cards here -->
+      </div>
+    </div>
+
+  </main>
+
+  <!-- GITHUB PAGES HOSTING INSTRUCTIONS MODAL -->
+  <div id="github-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-3">
+    <div class="bg-white rounded-2xl max-w-sm w-full p-5 shadow-2xl space-y-4 border border-slate-200">
+      <div class="flex items-center justify-between border-b pb-2">
+        <h3 class="font-bold text-slate-900 text-sm flex items-center gap-2">
+          <i class="fa-brands fa-github text-lg text-purple-700"></i> Deploy to GitHub Pages
+        </h3>
+        <button onclick="toggleGithubModal()" class="text-slate-400 hover:text-slate-600 text-lg">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <div class="text-xs text-slate-600 space-y-2.5 leading-relaxed">
+        <p class="font-medium text-slate-800">Follow these 4 simple steps to host your quiz online for free:</p>
+        <ol class="list-decimal list-inside space-y-1.5 pl-1">
+          <li>Create a new public repository on <strong>GitHub.com</strong>.</li>
+          <li>Upload this file as <strong><code>index.html</code></strong> along with your logo image <strong><code>OTTECHIES (1).jpg</code></strong>.</li>
+          <li>Go to Repository <strong>Settings</strong> &rarr; <strong>Pages</strong> tab.</li>
+          <li>Under <em>Branch</em>, select <strong>main</strong> (or master) and click <strong>Save</strong>.</li>
+        </ol>
+        <div class="bg-slate-100 p-2.5 rounded-lg border text-[11px] text-slate-700">
+          <i class="fa-solid fa-lightbulb text-amber-500 mr-1"></i> Your live site will be ready at: <br>
+          <span class="font-mono text-purple-700 font-semibold break-all">https://username.github.io/repository-name</span>
+        </div>
+      </div>
+
+      <button onclick="toggleGithubModal()" class="w-full py-2 bg-slate-900 text-white font-semibold text-xs rounded-xl hover:bg-slate-800 transition">
+        Got it!
+      </button>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="w-full py-2.5 text-center text-[11px] text-slate-400 border-t border-slate-800/60 bg-slate-950/40">
+    MIS 7203 &bull; Information Systems Management Quiz
+  </footer>
+
+  <!-- QUIZ ENGINE SCRIPT -->
+  <script>
+    // QUESTION BANK derived directly from MIS 7203 Lecture Notes
+    const fullQuestionBank = [
+      {
+        id: 1,
+        topic: "Core Concept",
+        question: "According to MIS 7203 lecture notes, what components constitute an Information System beyond just software?",
+        options: [
+          "Hardware and Software only",
+          "People, Data, Processes, Hardware, Software, Networks, and Controls",
+          "Databases, Cloud servers, and IT Technicians",
+          "Management decisions and computer networks"
+        ],
+        answer: 1,
+        explanation: "An IS is socio-technical and combines people, data, processes, hardware, software, networks, and controls to support operations and decision-making (Slide 4)."
+      },
+      {
+        id: 2,
+        topic: "Foundations",
+        question: "Which of the following correctly distinguishes Data from Information?",
+        options: [
+          "Data is processed; Information consists of raw unorganized figures.",
+          "Data is 'Registration rose by 12%'; Information is '2,500 students registered'.",
+          "Data consists of raw facts (e.g. '2,500 students registered'); Information is processed data with context (e.g. 'Registration rose by 12%').",
+          "Data and Information have identical meanings in managerial decision-making."
+        ],
+        answer: 2,
+        explanation: "Data represents raw facts/figures, while Information is processed data endowed with meaning and context that improves decisions (Slide 5)."
+      },
+      {
+        id: 3,
+        topic: "Data-to-Decision",
+        question: "What is the correct sequential order of the 6-step data-to-decision process?",
+        options: [
+          "Capture → Validate → Process → Analyze → Present → Act",
+          "Process → Capture → Validate → Present → Analyze → Act",
+          "Validate → Capture → Analyze → Process → Present → Act",
+          "Capture → Process → Present → Validate → Analyze → Act"
+        ],
+        answer: 0,
+        explanation: "The disciplined data-to-decision workflow follows: 1. Capture, 2. Validate, 3. Process, 4. Analyze, 5. Present, 6. Act (Slide 6)."
+      },
+      {
+        id: 4,
+        topic: "IS Types",
+        question: "Which type of system captures routine day-to-day transactions like sales, payroll, and fee payments?",
+        options: [
+          "Executive Support System (ESS)",
+          "Decision Support System (DSS)",
+          "Transaction Processing System (TPS)",
+          "Knowledge Management System (KMS)"
+        ],
+        answer: 2,
+        explanation: "TPS operates at the operational level to record and process day-to-day routine transactions like fee receipts and POS checkouts (Slide 8, 9)."
+      },
+      {
+        id: 5,
+        topic: "Management Levels",
+        question: "Which information system is designed specifically for senior executives to track long-term strategic direction?",
+        options: [
+          "Transaction Processing System (TPS)",
+          "Management Information System (MIS)",
+          "Executive Support System (ESS / EIS)",
+          "Supply Chain Management (SCM)"
+        ],
+        answer: 2,
+        explanation: "ESS / EIS provides top executives with strategic dashboards, executive insights, and macroeconomic tracking for strategic long-term planning (Slide 8, 9)."
+      },
+      {
+        id: 6,
+        topic: "Information Quality",
+        question: "Which characteristic of good information requires that its value exceeds the cost of collecting it?",
+        options: [
+          "Cost-effective",
+          "Timely",
+          "Secure",
+          "Clear"
+        ],
+        answer: 0,
+        explanation: "Quality information must be cost-effective—meaning the decision value generated by the information outweighs its collection cost (Slide 7)."
+      },
+      {
+        topic: "Competitive Strategy",
+        id: 7,
+        question: "In Porter's Competitive Forces Model, telecom providers offering payment rails for mobile money represent which force?",
+        options: [
+          "Bargaining power of buyers",
+          "Bargaining power of suppliers",
+          "Threat of new entrants",
+          "Threat of substitute products"
+        ],
+        answer: 1,
+        explanation: "Telecom infrastructure, cloud providers, and payment rails control vital infrastructure inputs, constituting supplier power in mobile money ecosystems (Slide 14)."
+      },
+      {
+        id: 8,
+        topic: "Data Governance",
+        question: "In organizational data governance, who is the true 'Data Owner' of student academic results?",
+        options: [
+          "The database administrator in the IT department who manages the server",
+          "The software vendor who wrote the registration portal code",
+          "The academic authority (e.g. Dean/Registrar) accountable for accuracy and policy",
+          "The student who entered their bio-data"
+        ],
+        answer: 2,
+        explanation: "Data owners are the functional leads/offices accountable for data accuracy and access rules. IT departments are custodians, not owners (Slide 20 notes)."
+      },
+      {
+        id: 9,
+        topic: "IS Challenges",
+        question: "Why do technically sound information systems frequently fail during implementation?",
+        options: [
+          "Because computers run out of storage space",
+          "Because they ignore socio-technical factors like organizational culture, user resistance, and politics",
+          "Because programming languages are inaccurate",
+          "Because managers refuse to buy software licenses"
+        ],
+        answer: 1,
+        explanation: "Most IS problems are socio-technical. Systems fail when they ignore power dynamics, user workload changes, incentives, and corporate culture (Slide 12, 17)."
+      },
+      {
+        id: 10,
+        topic: "IT Infrastructure",
+        question: "Which component is classified under the IT Infrastructure layer?",
+        options: [
+          "Data centres, backup power, cooling, and network hardware",
+          "Strategic business vision statements",
+          "Competitor marketing strategies",
+          "Departmental staff organograms"
+        ],
+        answer: 0,
+        explanation: "IT infrastructure consists of facilities, power, networks, hardware, software, data management, and security services (Slide 15)."
+      },
+      {
+        id: 11,
+        topic: "Emerging Tech",
+        question: "What is the primary managerial warning regarding the adoption of emerging technologies like AI, Cloud, or IoT?",
+        options: [
+          "Adopt them immediately to look modern",
+          "Do not adopt technology merely because it is fashionable; adopt it because it solves a strategic or operational problem",
+          "Avoid emerging tech completely because it is too insecure",
+          "Only adopt low-code tools and eliminate IT staff"
+        ],
+        answer: 1,
+        explanation: "Emerging tech must be driven by operational or strategic business problems, not tech trends or fashion (Slide 16)."
+      },
+      {
+        id: 12,
+        topic: "Enterprise Systems",
+        question: "What is the core purpose of an Enterprise Resource Planning (ERP) system?",
+        options: [
+          "To send marketing emails to prospective customers",
+          "To integrate core business processes (finance, HR, procurement, operations) into a single database",
+          "To host public university websites",
+          "To calculate daily social media engagements"
+        ],
+        answer: 1,
+        explanation: "ERPs integrate key functional areas (finance, HR, procurement, supply chain) into a centralized system for seamless data flow (Slide 8)."
+      },
+      {
+        id: 13,
+        topic: "IS Challenges",
+        question: "What is a primary driver of 'User Resistance' when introducing a new Information System?",
+        options: [
+          "Perceived changes to power, established routines, and increased workload",
+          "Faster internet connection speeds",
+          "Improved visual user interface colors",
+          "Automatic data backups"
+        ],
+        answer: 0,
+        explanation: "User resistance usually stems from fears over altered power dynamics, disrupted daily work habits, or higher effort demands (Slide 17)."
+      },
+      {
+        id: 14,
+        topic: "Strategic Alignment",
+        question: "Strategic Alignment in Information Systems Management is best defined as:",
+        options: [
+          "Ensuring all computers are purchased from the same hardware manufacturer",
+          "Ensuring IT investments directly support organizational mission, capabilities, and strategic goals",
+          "Migrating all database servers to cloud providers",
+          "Writing code with zero syntax errors"
+        ],
+        answer: 1,
+        explanation: "Strategic alignment means ensuring technology choices and investments directly complement and drive business strategy and goals (Slide 12)."
+      },
+      {
+        id: 15,
+        topic: "Global E-Business",
+        question: "Which digital feature is particularly central to e-business and trade within many African markets?",
+        options: [
+          "Legacy desktop mainframe computing",
+          "Mobile-first payment platforms and mobile financial logistics",
+          "Paper-based invoice reconciliation",
+          "Dial-up internet services"
+        ],
+        answer: 1,
+        explanation: "Mobile-first platforms (e.g., mobile money, agricultural portals) drive e-business, inclusion, and services in African markets (Slide 10)."
+      }
+    ];
+
+    // State Variables
+    let currentQuizMode = 'all'; // 'all' or 'quick'
+    let activeQuestions = [];
+    let currentIndex = 0;
+    let userAnswers = {}; // { questionId: optionIndex }
+    let failedQuestionsList = [];
+
+    // Mode Toggle Logic
+    function setQuizMode(mode) {
+      currentQuizMode = mode;
+      const allBtn = document.getElementById('mode-all-btn');
+      const quickBtn = document.getElementById('mode-quick-btn');
+
+      if (mode === 'all') {
+        allBtn.className = 'flex-1 py-2 rounded-lg bg-white text-purple-900 shadow-sm transition-all text-center';
+        quickBtn.className = 'flex-1 py-2 rounded-lg text-slate-600 hover:text-slate-900 transition-all text-center';
+      } else {
+        quickBtn.className = 'flex-1 py-2 rounded-lg bg-white text-purple-900 shadow-sm transition-all text-center';
+        allBtn.className = 'flex-1 py-2 rounded-lg text-slate-600 hover:text-slate-900 transition-all text-center';
+      }
+    }
+
+    // Start Quiz Execution
+    function startQuiz() {
+      // Prepare question list
+      if (currentQuizMode === 'quick') {
+        // Shuffle & pick 5
+        activeQuestions = [...fullQuestionBank].sort(() => 0.5 - Math.random()).slice(0, 5);
+      } else {
+        activeQuestions = [...fullQuestionBank];
+      }
+
+      currentIndex = 0;
+      userAnswers = {};
+
+      document.getElementById('start-screen').classList.add('hidden');
+      document.getElementById('results-screen').classList.add('hidden');
+      document.getElementById('quiz-screen').classList.remove('hidden');
+
+      renderQuestion();
+    }
+
+    // Render Current Question
+    function renderQuestion() {
+      const q = activeQuestions[currentIndex];
+      const total = activeQuestions.length;
+
+      // Update progress
+      document.getElementById('question-progress-label').innerText = `Question ${currentIndex + 1} of ${total}`;
+      const percent = Math.round(((currentIndex + 1) / total) * 100);
+      document.getElementById('question-percent').innerText = `${percent}%`;
+      document.getElementById('progress-bar-fill').style.width = `${percent}%`;
+
+      // Topic badge & Text
+      document.getElementById('topic-badge').innerText = q.topic;
+      document.getElementById('question-text').innerText = q.question;
+
+      // Render Options
+      const optionsContainer = document.getElementById('options-container');
+      optionsContainer.innerHTML = '';
+
+      q.options.forEach((optText, optIdx) => {
+        const isSelected = userAnswers[q.id] === optIdx;
+        
+        const optButton = document.createElement('button');
+        optButton.type = 'button';
+        optButton.onclick = () => selectOption(q.id, optIdx);
+
+        optButton.className = `w-full p-3 rounded-xl border text-left text-xs font-medium transition-all flex items-start gap-2.5 active:scale-98 ${
+          isSelected 
+            ? 'border-purple-600 bg-purple-50/90 text-purple-950 font-semibold ring-2 ring-purple-400/30 shadow-sm' 
+            : 'border-slate-200/90 bg-white/80 hover:bg-slate-50 text-slate-700'
+        }`;
+
+        // Option letter tag
+        const letter = String.fromCharCode(65 + optIdx); // A, B, C, D
+        optButton.innerHTML = `
+          <span class="w-5 h-5 rounded-md ${isSelected ? 'bg-purple-700 text-white' : 'bg-slate-100 text-slate-600'} text-[11px] font-bold flex items-center justify-center shrink-0 transition">
+            ${letter}
+          </span>
+          <span class="leading-relaxed pt-0.5">${optText}</span>
+        `;
+
+        optionsContainer.appendChild(optButton);
+      });
+
+      // Controls State
+      const prevBtn = document.getElementById('prev-btn');
+      prevBtn.disabled = currentIndex === 0;
+
+      const nextBtnText = document.getElementById('next-btn-text');
+      const nextBtnIcon = document.getElementById('next-btn-icon');
+
+      if (currentIndex === total - 1) {
+        nextBtnText.innerText = 'Submit';
+        nextBtnIcon.className = 'fa-solid fa-check text-[10px]';
+      } else {
+        nextBtnText.innerText = 'Next';
+        nextBtnIcon.className = 'fa-solid fa-chevron-right text-[10px]';
+      }
+    }
+
+    // Select Answer Option
+    function selectOption(qId, optionIdx) {
+      userAnswers[qId] = optionIdx;
+      renderQuestion();
+    }
+
+    // Navigation handlers
+    function prevQuestion() {
+      if (currentIndex > 0) {
+        currentIndex--;
+        renderQuestion();
+      }
+    }
+
+    function nextQuestion() {
+      if (currentIndex < activeQuestions.length - 1) {
+        currentIndex++;
+        renderQuestion();
+      } else {
+        finishQuiz();
+      }
+    }
+
+    // Finish Quiz & Compute Results
+    function finishQuiz() {
+      let score = 0;
+      failedQuestionsList = [];
+
+      activeQuestions.forEach(q => {
+        const userAns = userAnswers[q.id];
+        if (userAns === q.answer) {
+          score++;
+        } else {
+          failedQuestionsList.push({
+            questionObj: q,
+            userAnsIndex: userAns
+          });
+        }
+      });
+
+      const total = activeQuestions.length;
+      const percentage = Math.round((score / total) * 100);
+
+      // Display Scores
+      document.getElementById('score-percentage').innerText = `${percentage}%`;
+      document.getElementById('score-fraction').innerText = `${score}/${total}`;
+
+      const scoreHeadline = document.getElementById('score-headline');
+      const scoreSubtext = document.getElementById('score-subtext');
+
+      if (percentage >= 80) {
+        scoreHeadline.innerText = "Excellent Job! 🎉";
+        scoreHeadline.className = "text-lg font-bold text-emerald-700";
+      } else if (percentage >= 50) {
+        scoreHeadline.innerText = "Good Effort! 👍";
+        scoreHeadline.className = "text-lg font-bold text-amber-700";
+      } else {
+        scoreHeadline.innerText = "Needs Review 📚";
+        scoreHeadline.className = "text-lg font-bold text-pink-700";
+      }
+
+      // Render Review / Failed list
+      renderReviewList();
+
+      // Enable/Disable Retry Failed Button
+      const retryBtn = document.getElementById('retake-failed-btn');
+      retryBtn.disabled = failedQuestionsList.length === 0;
+
+      // Show Results Screen
+      document.getElementById('quiz-screen').classList.add('hidden');
+      document.getElementById('results-screen').classList.remove('hidden');
+    }
+
+    // Render Review Cards
+    function renderReviewList() {
+      const reviewContainer = document.getElementById('review-list');
+      const failedBadge = document.getElementById('failed-count-badge');
+      reviewContainer.innerHTML = '';
+
+      failedBadge.innerText = `${failedQuestionsList.length} Failed`;
+
+      if (failedQuestionsList.length === 0) {
+        reviewContainer.innerHTML = `
+          <div class="card-glass p-5 rounded-2xl text-center space-y-2 border border-emerald-200">
+            <div class="text-3xl text-emerald-500"><i class="fa-solid fa-circle-check"></i></div>
+            <h4 class="font-bold text-slate-800 text-sm">Perfect Score!</h4>
+            <p class="text-xs text-slate-600">You answered all questions correctly. Great understanding of MIS 7203 concepts!</p>
+          </div>
+        `;
+        return;
+      }
+
+      failedQuestionsList.forEach((item, idx) => {
+        const q = item.questionObj;
+        const userAnsText = item.userAnsIndex !== undefined ? q.options[item.userAnsIndex] : "No answer selected";
+        const correctAnsText = q.options[q.answer];
+
+        const card = document.createElement('div');
+        card.className = "card-glass rounded-xl p-3.5 border border-slate-200/80 shadow-sm space-y-2.5 text-xs";
+
+        card.innerHTML = `
+          <div class="flex items-start justify-between gap-2">
+            <span class="font-bold text-slate-900 leading-tight">
+              ${idx + 1}. ${q.question}
+            </span>
+            <span class="shrink-0 bg-slate-100 text-slate-600 font-bold px-2 py-0.5 rounded text-[10px]">
+              ${q.topic}
+            </span>
+          </div>
+
+          <div class="space-y-1.5 pt-1">
+            <!-- User Selection -->
+            <div class="p-2 rounded-lg bg-pink-50/80 border border-pink-200 text-pink-950 flex items-start gap-2">
+              <i class="fa-solid fa-xmark text-pink-600 mt-0.5 text-sm shrink-0"></i>
+              <div>
+                <span class="font-bold block text-[10px] text-pink-700 uppercase">Your Answer</span>
+                <span>${userAnsText}</span>
+              </div>
+            </div>
+
+            <!-- Correct Answer -->
+            <div class="p-2 rounded-lg bg-emerald-50/80 border border-emerald-200 text-emerald-950 flex items-start gap-2">
+              <i class="fa-solid fa-check text-emerald-600 mt-0.5 text-sm shrink-0"></i>
+              <div>
+                <span class="font-bold block text-[10px] text-emerald-700 uppercase">Correct Answer</span>
+                <span class="font-semibold">${correctAnsText}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Explanation -->
+          <div class="bg-purple-50/60 p-2.5 rounded-lg border border-purple-100 text-slate-700 leading-relaxed text-[11px]">
+            <span class="font-bold text-purple-900 block mb-0.5">
+              <i class="fa-solid fa-lightbulb text-amber-500 mr-1"></i> Course Rationale:
+            </span>
+            ${q.explanation}
+          </div>
+        `;
+
+        reviewContainer.appendChild(card);
+      });
+    }
+
+    // Retry Only Failed Items
+    function retryFailedQuestions() {
+      if (failedQuestionsList.length === 0) return;
+
+      activeQuestions = failedQuestionsList.map(item => item.questionObj);
+      currentIndex = 0;
+      userAnswers = {};
+
+      document.getElementById('results-screen').classList.add('hidden');
+      document.getElementById('quiz-screen').classList.remove('hidden');
+
+      renderQuestion();
+    }
+
+    // Restart Full Quiz
+    function restartFullQuiz() {
+      document.getElementById('results-screen').classList.add('hidden');
+      document.getElementById('start-screen').classList.remove('hidden');
+    }
+
+    // Toggle Modal
+    function toggleGithubModal() {
+      const modal = document.getElementById('github-modal');
+      modal.classList.toggle('hidden');
+    }
+  </script>
+</body>
+</html>
